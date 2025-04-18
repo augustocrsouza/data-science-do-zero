@@ -60,3 +60,60 @@ print("Total de conexões:", total_connections)
 print("Média de conexões por usuário:", avg_connections)
 print("Usuários com mais amigos:")
 print(num_friends_by_id)
+
+def foaf_ids_bad(user):
+    """"foaf significa "friend of a friend" [amigo de um amigo]"""
+    return [foaf_id
+    for friend_id in friendships[user["id"]]
+    for foaf_id in friendships[friend_id]]
+
+    from collections import Counter  # não é carregado por padrão
+
+    def friends_of_friends(user):
+        user_id = user["id"]
+        return Counter (
+            foaf_id
+            for friend_id in friendships[user_id]    # Para cada amigo meu
+            for foaf_id in friendships[friend_id]    # encontre os amigos deles
+            if foaf_id != user_id                    # que nao sejam eu
+            and foaf_id not in friendships[user_id]  # e não sejam meus amigos.
+        )
+
+print(friends_of_friends(users[3]))  # type: ignore # Counter({0: 2, 5: 1})
+
+interests = [
+    (0, "Hadoop", "Big Data", "HBase", "Java", "Spark", "Storm", "Cassandra")
+(1, "NoSQL", "MongoDB", "Cassandra", "HBase")
+(2, "Python", "scikit-learn", "scipy", "numpy", "statsmodels", "pandas")
+(3, "R", "Python", "statistics", "regression", "probability")
+(4, "machine learning", "regression", "decision trees", "libsvm")
+(5, "Python", "R", "Java", "C++", "Haskell", "programming languages")
+(6, "statistics", "probability", "mathematics", "theory")
+(7, "machine learning", "scikit-learn", "Mahout", "neural networks")
+(8, "neural networks", "deep learning", "Big Data", "artificial intelligence")
+(9, "Hadoop", "Java", "MapReduce", "Big Data")
+]
+
+def data_scientists_who_like(target_interest):
+    """Encontre os ids dos usuários com o mesmo interesse"""
+    return [user_id
+    for user_id, user_interest in interests
+    if user_interest == target_interest]
+
+    from collections import defaultdict
+
+    # as chaves são interesses, os valores são listas de user_ids com o interesse em questão
+    user_ids_interest = defaultdict(list)
+    for user_id, interest in interests:
+        user_ids_by_interest[interest].append(user_id)
+    # as chaves são user_ids, os valores são listas de interesses do user_id em questão
+    for user_id, interest in interest:
+        user_ids_by_user_id[user_id].append(interest)
+
+    def most_common_interests_with(user):
+        return Counter(
+            interest_user_id
+            for interest in interests_by_user_id[user["id"]]
+            for interested_user_id in user_ids_by_interest[interest]
+            if interested_user_id is user["id"]
+        )
