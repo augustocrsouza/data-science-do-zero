@@ -117,3 +117,68 @@ def data_scientists_who_like(target_interest):
             for interested_user_id in user_ids_by_interest[interest]
             if interested_user_id is user["id"]
         )
+    
+    # Salários e experiências
+
+salaries_and_tenures = [(83000, 8.7), (88000, 8.1), (48000, 0.7), (76000, 6), (69000, 6.5), (76000, 7.5), (60000, 2.5), (83000, 10), (48000, 1.9), (63000, 4.2)]
+
+#dados plotados
+salary_by_tenure = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    salary_by_tenure[tenure].append(salary)
+
+average_salary_by_tenure = {
+    tenure: sum(salaries) / len(salaries)
+    for tenure, salaries in salary_by_tenure.items()}
+
+#buckets de experiência
+
+def tenure_bucket(tenure):
+    if tenure <2:
+        return "less than two"
+    elif tenure < 5:
+        return "between two and five"
+    else:
+        return "more than five"
+
+salary_by_tenure_bucket = defaultdict(list)
+
+for salary, tenure in salaries_and_tenures:
+    bucket = tenure_bucket(tenure)
+    salary_by_tenure_bucket[bucket].append(salary)
+
+average_salary_by_bucket = {
+    tenure_bucket: sum(salaries) / len(salaries)
+    for tenure_bucket, salaries in salary_by_tenure_bucket.items()
+}
+
+# contas pagas
+years_paid_or_unpaid = [
+    (0.7, "paid"),
+    (1.9, "unpaid"),
+    (2.5, "paid"),
+    (4.2, "unpaid"),
+    (6.0, "unpaid"),
+    (6.5, "unpaid"),
+    (7.5, "unpaid"),
+    (8.1, "unpaid"),
+    (8.7, "paid"),
+    (10.0, "paid")
+]
+
+def predict_paid_or_unpaid(years_experience):
+    if years_experience < 3.0:
+        return "paid"
+    elif years_experience < 8.5:
+        return "unpaid"
+    else:
+        return "paid"
+    
+words_and_counts = Counter(word
+                           for user, interest in interests
+                           for word in interest.lower().split())
+
+for word, count in words_and_counts.most_common():
+    if count > 1:
+        print(word, count)
